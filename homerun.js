@@ -1,13 +1,14 @@
 ( function() {
 
+    // error not found :Definition for rule 'keyword-spacing' was not found
+    
     "use strict";
 
     var HomeRun;
 
     HomeRun = function( oApp ) {
         var game = this,  // eslint-disable-line consistent-this
-            Donuts,
-            sound = document.getElementById('player');
+            Donuts;
 
         this.app = oApp;
         this.time = {
@@ -89,8 +90,8 @@
             },
             "drawScore": function( iScore ) {
                 oApp.context.font = "bold 30px 'Arial'";
-               oApp.context.textAlign = "center";
-               oApp.context.fillText( "Votre Score : " + iScore, game.app.width / 2, ( game.app.height ) / 2 - 70 );
+                oApp.context.textAlign = "center";
+                oApp.context.fillText( "Votre Score : " + iScore, game.app.width / 2, ( game.app.height ) / 2 - 70 );
             }
         };
         // SOL
@@ -146,7 +147,7 @@
                     "step": 0
                 };
                 this.state = {
-                    "isInDangerZone": false,
+                    "isInDangerZone": false
                 };
                 this.score = {
                     "current": 0
@@ -184,12 +185,11 @@
             },
             "update": function( oEvent ) {
                 var self = this;
-                // handle event. we ensure that the sended event is the good one.
+
                 if ( oEvent ) {
                     if ( oEvent.type === "click" || ( oEvent.type === "keyup" && oEvent.keyCode === 32 ) ) {
                         if ( !game.ended ) {
                             if ( !this.state.acceleration ) {
-                                // since we know that this is the first click/keypress on bird, we can generate tubes here
                                 Donuts.generate( 1 );
                                 game.started = true;
                                 this.state.acceleration = 0.4;
@@ -211,20 +211,17 @@
                 self.position.right = self.destinationFrame.dx + self.destinationFrame.dw / 2;
 
 
-                  game.donuts.forEach( function( oDonuts ) {
-                   var oPosition = self.position,
-                       ooDonuts = oDonuts.frame.donuts;
+                game.donuts.forEach( function( oDonuts ) {
+                    var oPosition = self.position,
+                        ooDonuts = oDonuts.frame.donuts;
 
-                       if ( oPosition.left < ooDonuts.dx + ooDonuts.dw && oPosition.left + ( oPosition.right - oPosition.left ) > ooDonuts.dx && oPosition.top < ooDonuts.dy + ooDonuts.dh && ( oPosition.bottom - oPosition.top ) + oPosition.top > ooDonuts.dy ) {
-                         game.over();
-                     } else {
-                         self.state.isInDangerZone = true;
+                    if ( oPosition.left < ooDonuts.dx + ooDonuts.dw && oPosition.left + ( oPosition.right - oPosition.left ) > ooDonuts.dx && oPosition.top < ooDonuts.dy + ooDonuts.dh && ( oPosition.bottom - oPosition.top ) + oPosition.top > ooDonuts.dy ) {
+                        game.over();
+                    } else {
+                        self.state.isInDangerZone = true;
                     }
-
-
-
-               } );
-               oApp.context.font = "bold 20px 'Arial'";
+                } );
+                oApp.context.font = "bold 20px 'Arial'";
                 oApp.context.textAlign = "right";
                 oApp.context.fillText( this.score.current, game.app.width - 10, 30 );
                 oApp.context.fillStyle = "white";
@@ -233,6 +230,7 @@
         };
         Donuts = function( iDX ) {
             var iPairHeight = Donuts.generateNextPairHeight();
+
             this.frame = {
                 "donuts": {
                     "sx": 827,
@@ -244,22 +242,23 @@
                     "dw": 70,
                     "dh": 69
                 }
-            }
+            };
         };
         Donuts.prototype.draw = function() {
             game._drawSpriteFromFrame( this.frame.donuts );
         };
         Donuts.prototype.update = function() {
             var iPairHeight;
-           this.frame.donuts.dx -= game.ground.speed;
 
-           if ( this.frame.donuts.dx < ( this.frame.donuts.dw * -1 ) ) {
-               this.frame.donuts.dx = game.app.width;
-               iPairHeight = Donuts.generateNextPairHeight();
-               this.frame.donuts.dy = iPairHeight;
-           }
+            this.frame.donuts.dx -= game.ground.speed;
 
-           this.draw();
+            if ( this.frame.donuts.dx < ( this.frame.donuts.dw * -1 ) ) {
+                this.frame.donuts.dx = game.app.width;
+                iPairHeight = Donuts.generateNextPairHeight();
+                this.frame.donuts.dy = iPairHeight;
+            }
+
+            this.draw();
 
         };
         Donuts.lastGeneratedPairHeight = -1 * ( 50 + Math.floor( Math.random() * 250 ) );
@@ -324,11 +323,11 @@
             this.homerRun.update();
             if ( this.time.current - this.time.start > 100 ) {
                 this.time.start = Date.now();
-                 ( ++this.homerRun.animation.step < this.homerRun.animation.maxSteps ) || ( this.homerRun.animation.step = 0 ) || ( game.started !== true ) || ( ++this.homerRun.score.current );
+                ( ++this.homerRun.animation.step < this.homerRun.animation.maxSteps ) || ( this.homerRun.animation.step = 0 ) || ( game.started !== true ) || ( ++this.homerRun.score.current );
             }
             this.donuts.forEach( function( ooDonuts ) {
-           ooDonuts.update();
-       } );
+                ooDonuts.update();
+            } );
 
             this.homerRun.draw( this.homerRun.animation.step );
             // Tant que le jeu ne démarre pas on affiche les objets play
@@ -338,6 +337,7 @@
         };
         this.over = function() {
             var iCurrentScore = this.homerRun.score.current;
+
             window.cancelAnimationFrame( this.animationRequestID );
 
             this.ended = true;
